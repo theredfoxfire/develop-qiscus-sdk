@@ -12,6 +12,7 @@ import {
   View,
   Image,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 import {InitApp, ChatRenderer} from 'react-native-qiscus-sdk';
 
@@ -28,9 +29,23 @@ export default class AppSDK extends Component {
       newMessage: null,
       rooms: null,
       selectedRoom: null,
+      delivered: null,
+      chatRoomCreated: null,
+      groupRoomCreated: null,
+      commentRead: null,
+      loginError: null,
+      presence: null,
+      typing: null,
     };
   }
   componentWillMount() {
+    const userAuth = {
+      email: 'fikri@qiscus.com',
+      password: 'password',
+      displayName: 'fikri',
+      avatar: null,
+      appID: 'sdksample',
+    }
     // required callback function to set global state of rooms list
     const setRooms = (data) => this.setState({rooms: data});
 
@@ -39,14 +54,46 @@ export default class AppSDK extends Component {
 
     // required callback function to catch new received message
     const receiveNewMessage = (data) => this.setState({newMessage: data});
-    InitApp({initApp, receiveNewMessage, setRooms});
+
+    // optional callback methods
+    const commentDeliveredCallback = (data) => this.setState({delivered: data});
+    const chatRoomCreatedCallback = (data) => this.setState({chatRoomCreated: data});
+    const groupRoomCreatedCallback = (data) => this.setState({groupRoomCreated: data});
+    const commentReadCallback = (data) => this.setState({commentRead: data});
+    const loginErrorCallback = (data) => this.setState({loginError: data});
+    const presenceCallback = (data) => this.setState({presence: data});
+    const typingCallback = (data) => this.setState({typing: data});
+
+    const callbackOptions = {
+      commentDeliveredCallback,
+      chatRoomCreatedCallback,
+      groupRoomCreatedCallback,
+      commentReadCallback,
+      loginErrorCallback,
+      presenceCallback,
+      typingCallback,
+    };
+
+    InitApp({initApp, receiveNewMessage, setRooms, userAuth, callbackOptions});
   }
+
+  // Open chat
   _openChat(room: Room) {
     this._chatTarget(room);
   }
+
+  // Select a Room
   _chatTarget(room: Room) {
     this.setState({
       selectedRoom: room,
+    });
+  }
+
+  // Create new group example
+  _createNewGroup() {
+    let {state: {qiscus}} = this;
+    qiscus.createGroupRoom('Group RN 9',['guest@qiscus.com', 'fikri@qiscus.com']).then(() => {
+      this._openChat({name: this.state.groupRoomCreated.name, id: this.state.groupRoomCreated.id});
     });
   }
   render() {
@@ -58,9 +105,10 @@ export default class AppSDK extends Component {
     if (!selectedRoom) {
       return (
         <View style={styles.container}>
-          <TouchableOpacity style={styles.button} onPress={() => qiscus.createGroup('Created from RN', ['emails'])}>
+          <TouchableOpacity style={styles.button} onPress={() => this._createNewGroup()}>
             <Text>New Group Chat</Text>
           </TouchableOpacity>
+          <ScrollView>
           {rooms.map((item, i) => {
               const name = item.room_name;
               const avatar_url = item.avatar_url ? item.avatar_url : 'https://qiscuss3.s3.amazonaws.com/uploads/55c0c6ee486be6b686d52e5b9bbedbbf/2.png';
@@ -81,6 +129,7 @@ export default class AppSDK extends Component {
                   </TouchableOpacity>
               );
             })}
+          </ScrollView>
         </View>
       );
     } else {
@@ -101,7 +150,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5FCFF',
-    marginTop: 10,
+    marginTop: 20,
   },
   welcome: {
     fontSize: 20,
