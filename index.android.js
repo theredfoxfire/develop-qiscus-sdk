@@ -92,6 +92,10 @@ export default class AppSDK extends Component {
   // Create new group example
   _createNewGroup() {
     let {state: {qiscus}} = this;
+
+    // required params
+    //    string of group Name
+    //    array of string members email
     qiscus.createGroupRoom('Group RN 9',['guest@qiscus.com', 'fikri@qiscus.com']).then(() => {
       this._openChat({name: this.state.groupRoomCreated.name, id: this.state.groupRoomCreated.id});
     });
