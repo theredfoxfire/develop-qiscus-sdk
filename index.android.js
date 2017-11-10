@@ -15,6 +15,11 @@ import {
 } from 'react-native';
 import {InitApp, ChatRenderer} from 'react-native-qiscus-sdk';
 
+type Room = {
+  name: string,
+  id: number,
+};
+
 export default class AppSDK extends Component {
   constructor() {
     super();
@@ -26,20 +31,20 @@ export default class AppSDK extends Component {
     };
   }
   componentWillMount() {
-    // required to set global state of rooms list
+    // required callback function to set global state of rooms list
     const setRooms = (data) => this.setState({rooms: data});
 
-    // required to set global state of qiscus object
+    // required callback function to set global state of qiscus object
     const initApp = (data) => this.setState({qiscus: data});
 
-    // required to catch new received message
+    // required callback function to catch new received message
     const receiveNewMessage = (data) => this.setState({newMessage: data});
     InitApp({initApp, receiveNewMessage, setRooms});
   }
-  _openChat(room: {name: string, id: number}) {
+  _openChat(room: Room) {
     this._chatTarget(room);
   }
-  _chatTarget(room: Object) {
+  _chatTarget(room: Room) {
     this.setState({
       selectedRoom: room,
     });
@@ -53,6 +58,9 @@ export default class AppSDK extends Component {
     if (!selectedRoom) {
       return (
         <View style={styles.container}>
+          <TouchableOpacity style={styles.button} onPress={() => qiscus.createGroup('Created from RN', ['emails'])}>
+            <Text>New Group Chat</Text>
+          </TouchableOpacity>
           {rooms.map((item, i) => {
               const name = item.room_name;
               const avatar_url = item.avatar_url ? item.avatar_url : 'https://qiscuss3.s3.amazonaws.com/uploads/55c0c6ee486be6b686d52e5b9bbedbbf/2.png';
@@ -120,6 +128,17 @@ const styles = StyleSheet.create({
   text: {
     marginLeft: 12,
     fontSize: 16,
+  },
+  button: {
+    marginLeft: 30,
+    marginBottom: 10,
+    marginTop: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 40,
+    width: 80,
+    borderWidth: 1,
+    borderColor: '#333131',
   },
 });
 

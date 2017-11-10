@@ -9,7 +9,7 @@
 	"dependencies": {
 		"react": "16.0.0-alpha.12",
 		"react-native": "0.45.1",
-		"react-native-qiscus-sdk": "0.0.13"
+		"react-native-qiscus-sdk": "0.0.18"
 	},
 	"devDependencies": {
 		"babel-jest": "21.2.0",

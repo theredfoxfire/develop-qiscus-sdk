@@ -3,6 +3,8 @@ package com.appsdk;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.farmisen.react_native_file_uploader.RCTFileUploaderPackage;
+import com.imagepicker.ImagePickerPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -24,6 +26,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RCTFileUploaderPackage(),
+            new ImagePickerPackage(),
             new VectorIconsPackage()
       );
     }
