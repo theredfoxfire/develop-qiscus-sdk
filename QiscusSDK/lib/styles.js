@@ -19,24 +19,23 @@ export default{
     width: 0.45 * width,
   },
   breaker: {
-    height: 100,
+    height: 150,
     backgroundColor: '#e0f2f1',
   },
   commentList: {
     flexGrow: 1,
     backgroundColor: '#e0f2f1',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
+    height: height * 0.80,
   },
   commentContainer: {
     height: height * 0.80,
   },
   textInput: {
     width: 0.80 * width,
-    marginRight: -10,
     paddingHorizontal: 5,
     flex: 1,
     height: 42,
+    fontSize: 16,
   },
   button: {
     width: 30,
@@ -95,7 +94,6 @@ export default{
   },
   cardContainerLeft: {
     flexDirection: 'row',
-    marginTop: 10,
     paddingTop: 3,
     marginRight: width * 0.10,
     justifyContent: 'flex-start',
@@ -105,12 +103,11 @@ export default{
     flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: '#fff',
+    padding: 5,
   },
   cardContainerRight: {
     flexDirection: 'row',
-    marginTop: 10,
     paddingTop: 3,
     marginLeft: width * 0.10,
-    justifyContent: 'flex-end',
   },
 };

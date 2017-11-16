@@ -1,39 +1,34 @@
 import React, { Component } from 'react';
 import ImagePicker from 'react-native-image-picker';
-import {View, Platform, ActionSheet} from 'react-native';
+import {View, Platform, TouchableOpacity} from 'react-native';
+import autobind from 'class-autobind';
 import FileUploader from 'react-native-file-uploader';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import ActionSheet from 'react-native-actionsheet'
 import styles from './styles';
 
-const options = {
-  title: 'Select Image',
-  customButtons: [
-  ],
-  storageOptions: {
-    skipBackup: true,
-    path: 'images'
-  }
-};
-const BUTTONS = [
-  { text: "Image", icon: "ios-image", iconColor: "#2c8ef4", file: 'image' },
-  { text: "Cancel", icon: "close", iconColor: "#25de5b", file: false }
-];
-const DESTRUCTIVE_INDEX = 3;
-const CANCEL_INDEX = 2;
-const DEFAULT_INDEX = {
-  text: null,
-  icon: null,
-  iconColor: null,
-  file: null,
-};
+const CANCEL_INDEX = 0;
+const DESTRUCTIVE_INDEX = 2;
+const options = [ 'Cancel', 'Image' ];
+const title = 'File type?';
 
 export default class FilePicker extends Component {
   constructor() {
     super();
     this.state = {
-      clicked: DEFAULT_INDEX,
       imageSource: null,
+      selected: 0,
     };
-    this.actionSheet = null;
+    autobind(this);
+  }
+  _showActionSheet() {
+    this.ActionSheet.show();
+  }
+
+  _handlePress(i) {
+    this.setState({
+      selected: i
+    });
   }
   _pickImage() {
     let {props: {sendMessage}} = this;
@@ -78,35 +73,29 @@ export default class FilePicker extends Component {
 
         this.setState({
           imageSource: source,
-          clicked: DEFAULT_INDEX,
+          selected: 0,
         });
       }
     });
   }
-  _showActionSheet() {
-    if( this.actionSheet !== null ) {
-        this.actionSheet._root.showActionSheet({
-          options: BUTTONS,
-          cancelButtonIndex: CANCEL_INDEX,
-          destructiveButtonIndex: DESTRUCTIVE_INDEX,
-          title: "File"
-        },
-        buttonIndex => {
-          this.setState({ clicked: BUTTONS[buttonIndex] });
-        });
-    }
-  }
   render() {
-    let {state: {clicked: {file}}} = this;
-    if (file === 'image') {
+    let {state: {selected}} = this;
+    if (selected === 1) {
       this._pickImage();
     }
     return (
       <View>
-        {/* <Button onPress={() => this._showActionSheet()} style={styles.button} transparent>
-          <Icon name='md-attach' style={styles.sendIcon} />
-        </Button>
-        <ActionSheet ref={(c) => { this.actionSheet = c; }} /> */}
+        <TouchableOpacity style={{padding: 2}} onPress={() => this._showActionSheet()}>
+          <Icon name="paperclip" size={30} color="#444" style={{marginRight: 5}}/>
+        </TouchableOpacity>
+        <ActionSheet
+          ref={o => this.ActionSheet = o}
+          title={title}
+          options={options}
+          cancelButtonIndex={CANCEL_INDEX}
+          destructiveButtonIndex={DESTRUCTIVE_INDEX}
+          onPress={this._handlePress}
+        />
       </View>
     );
   }

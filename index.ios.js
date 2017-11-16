@@ -109,9 +109,9 @@ export default class AppSDK extends Component {
     if (!selectedRoom) {
       return (
         <View style={styles.container}>
-          <TouchableOpacity style={styles.button} onPress={() => this._createNewGroup()}>
+          {/* <TouchableOpacity style={styles.button} onPress={() => this._createNewGroup()}>
             <Text>New Group Chat</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <ScrollView>
           {rooms.map((item, i) => {
               const name = item.room_name;
