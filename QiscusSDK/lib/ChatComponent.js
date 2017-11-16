@@ -28,6 +28,7 @@ export function ChatComponent(props: Object) {
   let currentUserName = '';
   let isSamePerson = true;
   let marginChat = 10;
+  let marginMessage = 0;
   return (
     <View onLayout={(event) => {
       updateHeight(event.nativeEvent.layout.height);
@@ -39,15 +40,18 @@ export function ChatComponent(props: Object) {
           currentUserName = data.username_as;
           isSamePerson = false;
           marginChat = 10;
+          marginMessage = 0;
         } else {
           marginChat = 0;
+          marginMessage = 6;
           isSamePerson = true;
         }
         if (user.username === data.username_as) {
           return (
-            <View style={{flexDirection: 'row', marginTop: marginChat, justifyContent: 'flex-end',}} key={data.id}>
+            <View style={[styles.messageContainerRight, {marginTop: marginChat}]} key={data.id}>
             <View style={styles.cardContainerRight}>
-              <View style={styles.cardRightContent}>
+              <View style={[styles.cardRightContent, {marginRight: marginMessage}]}>
+                {isSamePerson ? null : <View style={{paddingBottom: 5, borderBottomColor: '#b3bab5', borderBottomWidth: 1, marginBottom: 5}}><Text style={{fontWeight: 'bold'}}>{data.username_as}</Text></View>}
                 <View>
                   {renderMessage(isFile, data.message)}
                 </View>
@@ -66,7 +70,7 @@ export function ChatComponent(props: Object) {
           );
         } else {
           return (
-            <View style={{flexDirection: 'row', marginTop: marginChat}} key={data.id}>
+            <View style={[styles.messageContainerLeft, {marginTop: marginChat}]} key={data.id}>
               {!isSamePerson ?
                 <Image
                   style={{height: 40, width: 40, borderRadius: 20, marginLeft: 5}}
@@ -77,7 +81,8 @@ export function ChatComponent(props: Object) {
                 {
                   isSamePerson ? null : <View style={styles.arrowLeftTop} />
                 }
-                <View style={styles.cardLeftContent}>
+                <View style={[styles.cardLeftContent, {marginLeft: marginMessage}]}>
+                  {isSamePerson ? null : <View style={{paddingBottom: 5, borderBottomColor: '#b3bab5', borderBottomWidth: 1, marginBottom: 5}}><Text style={{fontWeight: 'bold'}}>{data.username_as}</Text></View>}
                   <View>
                     {renderMessage(isFile, data.message)}
                   </View>

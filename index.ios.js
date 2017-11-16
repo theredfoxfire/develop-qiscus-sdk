@@ -138,8 +138,8 @@ export default class AppSDK extends Component {
       );
     } else {
       return (
-        <View style={styles.container}>
-          <TouchableOpacity style={{marginLeft: 30, marginBottom: 10, marginTop: 0, justifyContent: 'center', alignItems: 'center', height: 40, width: 80, borderWidth: 1, borderColor: '#333131'}} onPress={() => this.setState({selectedRoom: null})}>
+        <View style={styles.containerChat}>
+          <TouchableOpacity style={{marginLeft: 10, marginBottom: 10, marginTop: 3, justifyContent: 'center', alignItems: 'center', height: 40, width: 80, borderWidth: 1, borderColor: '#333131'}} onPress={() => this.setState({selectedRoom: null})}>
             <Text>Back</Text>
           </TouchableOpacity>
           <ChatRenderer qiscus={qiscus} message={newMessage} room={selectedRoom} initApp={initApp} />
@@ -155,6 +155,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5FCFF',
     marginTop: 20,
+  },
+  containerChat: {
+    flex: 1,
+    backgroundColor: '#406c7e',
+    marginTop: 20,
+    justifyContent: 'flex-start',
   },
   welcome: {
     fontSize: 20,

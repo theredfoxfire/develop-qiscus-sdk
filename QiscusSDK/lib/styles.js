@@ -92,10 +92,17 @@ export default{
     borderRightColor: 'transparent',
     borderBottomColor: 'transparent',
   },
+  messageContainerRight: {
+    marginLeft: width * 0.15,
+    flexDirection: 'row', justifyContent: 'flex-end',
+  },
+  messageContainerLeft: {
+    marginRight: width * 0.15,
+    flexDirection: 'row',
+  },
   cardContainerLeft: {
     flexDirection: 'row',
     paddingTop: 3,
-    marginRight: width * 0.10,
     justifyContent: 'flex-start',
   },
   formStyle: {
@@ -108,6 +115,5 @@ export default{
   cardContainerRight: {
     flexDirection: 'row',
     paddingTop: 3,
-    marginLeft: width * 0.10,
   },
 };
