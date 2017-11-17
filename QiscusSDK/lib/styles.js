@@ -12,14 +12,14 @@ export default{
   chatContainer: {
     flex: 1,
     flexDirection: 'column',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
   },
   picture: {
     height: 0.20 * height,
     width: 0.45 * width,
   },
   breaker: {
-    height: 150,
+    height: 75,
     backgroundColor: '#e0f2f1',
   },
   commentList: {
@@ -93,11 +93,11 @@ export default{
     borderBottomColor: 'transparent',
   },
   messageContainerRight: {
-    marginLeft: width * 0.15,
+    marginLeft: width * 0.25,
     flexDirection: 'row', justifyContent: 'flex-end',
   },
   messageContainerLeft: {
-    marginRight: width * 0.15,
+    marginRight: width * 0.25,
     flexDirection: 'row',
   },
   cardContainerLeft: {
