@@ -19,16 +19,13 @@ export default{
     width: 0.45 * width,
   },
   breaker: {
-    height: 75,
+    height: 25,
     backgroundColor: '#e0f2f1',
   },
   commentList: {
-    flexGrow: 1,
+    flex: 1,
     backgroundColor: '#e0f2f1',
-    height: height * 0.80,
-  },
-  commentContainer: {
-    height: height * 0.80,
+    // height: height * 0.80,
   },
   textInput: {
     width: 0.80 * width,

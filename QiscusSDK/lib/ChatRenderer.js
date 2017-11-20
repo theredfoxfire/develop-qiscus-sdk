@@ -18,7 +18,7 @@ export class ChatRenderer extends Component {
       clicked: null,
       formStyle: styles.formStyle,
       containerHeight: 0,
-      scroll: true,
+      lastComponentHeight: 0,
     };
   }
   componentWillMount() {
@@ -35,9 +35,6 @@ export class ChatRenderer extends Component {
       if (this.state.comments[0].comment_before_id !== message[0].comment_before_id) {
         if (message[0].user_id !== userData.id) {
           this._updateComments(nextProps.message);
-          this.setState({
-            scroll: true,
-          });
           this._measureChatContainer(this.state.containerHeight, 'new props');
         }
       }
@@ -49,11 +46,10 @@ export class ChatRenderer extends Component {
     });
   }
   _measureChatContainer(containerHeight, caller) {
-    console.log(caller);
     if (this.refs.chatContainer) {
       this.refs.chatContainer.measure((a, b, width, height, px, py) => {
           if (containerHeight > height) {
-            this._scrollAction(containerHeight);
+            this._scrollAction(containerHeight - height + 25);
           }
         }
       );
@@ -65,12 +61,8 @@ export class ChatRenderer extends Component {
     });
   }
   _scrollAction(height: number) {
-    const {state: {scroll}} = this;
-    if (scroll) {
-      // _scrollView.scrollTo({x: 0, y: height, animated: true});
-      _scrollView.scrollToEnd({animated: true});
-      this.setState({scroll: false});
-    }
+    // _scrollView.scrollTo({x: 0, y: height, animated: true});
+    _scrollView.scrollToEnd({animated: true});
   }
   _setNewMessage(text: string) {
     this.setState({
@@ -89,7 +81,7 @@ export class ChatRenderer extends Component {
   }
 
   render() {
-    let {props: {message, room, qiscus}, state: {comments, newMessage}} = this;
+    let {props: {message, room, qiscus}, state: {comments, newMessage, lastComponentHeight}} = this;
     if (!comments) {
       return <View style={{marginTop: 30, alignItems: 'center', justifyContent: 'center'}}><Text>Loading chats...</Text></View>
     }
@@ -99,8 +91,13 @@ export class ChatRenderer extends Component {
           <ScrollView
             ref={(scrollView) => { _scrollView = scrollView; }}
           >
-            <ChatComponent qiscus={qiscus} updateHeight={(height) => {this._measureChatContainer(height,'scrollView');this.setState({containerHeight: height});}} />
-            <View style={styles.breaker} />
+            <ChatComponent qiscus={qiscus} updateLastHeight={(height) => {
+              this.setState({
+                lastComponentHeight: height,
+              });
+            }}
+            updateHeight={(height) => {this._measureChatContainer(height,'scrollView');this.setState({containerHeight: height});}} />
+            <View style={[styles.breaker]} />
           </ScrollView>
         </View>
         <View style={this.state.formStyle}>

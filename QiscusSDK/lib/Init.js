@@ -36,11 +36,14 @@ export function InitApp(config) {
         });
       },
       newMessagesCallback: (data) => {
-        qiscus.chatGroup(data[0].room_id)
-        .then((data) => {
-          initApp(qiscus);
-        }).catch(err => console.log(err));
-        receiveNewMessage(data);
+        if (qiscus.selected.id === data[0].room_id)
+        {
+          qiscus.chatGroup(data[0].room_id)
+          .then((data) => {
+            initApp(qiscus);
+          }).catch(err => console.log(err));
+          receiveNewMessage(data);
+        }
       },
       commentDeliveredCallback: (data) => {
         callbackOptions.commentDeliveredCallback(data);

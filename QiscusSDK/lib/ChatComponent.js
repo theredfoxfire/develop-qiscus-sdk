@@ -22,7 +22,7 @@ function renderMessage(isFile: boolean, message: string) {
 }
 
 export function ChatComponent(props: Object) {
-  const {qiscus, updateHeight} = props;
+  const {qiscus, updateHeight, updateLastHeight} = props;
   const comments = qiscus.selected.comments;
   const user = qiscus.userData;
   let currentUserName = '';
@@ -47,30 +47,43 @@ export function ChatComponent(props: Object) {
           isSamePerson = true;
         }
         if (user.username === data.username_as) {
-          return (
-            <View style={[styles.messageContainerRight, {marginTop: marginChat}]} key={data.id}>
-            <View style={styles.cardContainerRight}>
-              <View style={[styles.cardRightContent, {marginRight: marginMessage}]}>
-                {isSamePerson ? null : <View style={{paddingBottom: 5, borderBottomColor: '#b3bab5', borderBottomWidth: 1, marginBottom: 5}}><Text style={{fontWeight: 'bold'}}>{data.username_as}</Text></View>}
-                <View>
-                  {renderMessage(isFile, data.message)}
+          if (data.username_real) {
+            return (
+              <View
+                onLayout={(event) => {
+                  updateLastHeight(event.nativeEvent.layout.height);
+                }}
+                style={[styles.messageContainerRight, {paddingTop: marginChat}]} key={data.id}>
+              <View style={styles.cardContainerRight}>
+                <View style={[styles.cardRightContent, {marginRight: marginMessage}]}>
+                  {isSamePerson ? null : <View style={{paddingBottom: 5, borderBottomColor: '#b3bab5', borderBottomWidth: 1, marginBottom: 5}}><Text style={{fontWeight: 'bold'}}>{data.username_as}</Text></View>}
+                  <View>
+                    {renderMessage(isFile, data.message)}
+                  </View>
                 </View>
+                {
+                  isSamePerson ? null : <View style={styles.arrowRight} />
+                }
               </View>
-              {
-                isSamePerson ? null : <View style={styles.arrowRight} />
+              {!isSamePerson ?
+                <Image
+                  style={{height: 40, width: 40, borderRadius: 20, marginRight: 5}}
+                  source={{uri: data.avatar}}
+                /> : <View style={{height: 40, width: 40, borderRadius: 20, marginRight: 5}} />
               }
-            </View>
-            {!isSamePerson ?
-              <Image
-                style={{height: 40, width: 40, borderRadius: 20, marginRight: 5}}
-                source={{uri: data.avatar}}
-              /> : <View style={{height: 40, width: 40, borderRadius: 20, marginRight: 5}} />
-            }
-            </View>
-          );
+              </View>
+            );
+          } else {
+            return;
+          }
+
         } else {
           return (
-            <View style={[styles.messageContainerLeft, {marginTop: marginChat}]} key={data.id}>
+            <View
+              onLayout={(event) => {
+                updateLastHeight(event.nativeEvent.layout.height);
+              }}
+              style={[styles.messageContainerLeft, {paddingTop: marginChat}]} key={data.id}>
               {!isSamePerson ?
                 <Image
                   style={{height: 40, width: 40, borderRadius: 20, marginLeft: 5}}
