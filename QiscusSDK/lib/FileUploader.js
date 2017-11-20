@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import ImagePicker from 'react-native-image-picker';
-import {View, Platform, TouchableOpacity} from 'react-native';
+import {View, Platform, ActivityIndicator, TouchableOpacity} from 'react-native';
 import autobind from 'class-autobind';
 import FileUploader from 'react-native-file-uploader';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -31,8 +31,12 @@ export default class FilePicker extends Component {
     });
   }
   _pickImage() {
-    let {props: {sendMessage}} = this;
+    let {props: {sendMessage, isSending}} = this;
     ImagePicker.showImagePicker(options, (response) => {
+      this.setState({
+        selected: 0,
+      });
+      isSending();
       if (response.didCancel) {
         console.log('User cancelled image picker');
       }
@@ -43,12 +47,10 @@ export default class FilePicker extends Component {
         console.log('User tapped custom button: ', response.customButton);
       }
       else {
-        let file = {
-          uri: response.uri,
-          type: response.type,
-          name: response.fileName,
-        };
         let source = Platform.OS === 'ios' ? response.uri : response.path;
+        this.setState({
+          imageSource: source,
+        });
         const settings = {
           uri: source,
           uploadUrl: `https://sdksample.qiscus.com/api/v2/sdk/upload`,
@@ -60,21 +62,14 @@ export default class FilePicker extends Component {
             token: this.state.token,
           }
         };
-
         FileUploader.upload(settings, (err, res) => {
           const data = JSON.parse(res.data);
           sendMessage(`[file] ${data.results.file.url} [/file]`);
         }, (sent, expectedToSend) => {
-            // do something when uploading
+          //do bla bla
         });
-
         // You can also display the image using data:
         // let source = { uri: 'data:image/jpeg;base64,' + response.data };
-
-        this.setState({
-          imageSource: source,
-          selected: 0,
-        });
       }
     });
   }

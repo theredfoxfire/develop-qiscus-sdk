@@ -1,6 +1,6 @@
 //@flow
 import React, { Component } from 'react';
-import { ScrollView, View, Text, TextInput, TouchableOpacity, Keyboard, Dimensions } from 'react-native';
+import { ScrollView, View, Text, ActivityIndicator, TextInput, TouchableOpacity, Keyboard, Dimensions } from 'react-native';
 import autobind from 'class-autobind';
 import styles from './styles';
 import {ChatComponent} from './ChatComponent';
@@ -18,7 +18,7 @@ export class ChatRenderer extends Component {
       clicked: null,
       formStyle: styles.formStyle,
       containerHeight: 0,
-      lastComponentHeight: 0,
+      isSending: false,
     };
   }
   componentWillMount() {
@@ -49,7 +49,7 @@ export class ChatRenderer extends Component {
     if (this.refs.chatContainer) {
       this.refs.chatContainer.measure((a, b, width, height, px, py) => {
           if (containerHeight > height) {
-            this._scrollAction(containerHeight - height + 25);
+            this._scrollAction(containerHeight - height);
           }
         }
       );
@@ -76,14 +76,15 @@ export class ChatRenderer extends Component {
       newMessage: null,
     });
     if (message) {
-      qiscus.submitComment(room.id, message, null, null, null);
+      qiscus.submitComment(room.id, message, null, null, null)
+      .then(this.setState({isSending: false}));
     }
   }
 
   render() {
-    let {props: {message, room, qiscus}, state: {comments, newMessage, lastComponentHeight}} = this;
+    let {props: {message, room, qiscus}, state: {comments, newMessage, isSending}} = this;
     if (!comments) {
-      return <View style={{marginTop: 30, alignItems: 'center', justifyContent: 'center'}}><Text>Loading chats...</Text></View>
+      return <ActivityIndicator style={[{alignItems: 'center', justifyContent: 'center'}]} size="large" color="#6fbf15" />
     }
     return (
       <View style={styles.chatContainer}>
@@ -91,24 +92,26 @@ export class ChatRenderer extends Component {
           <ScrollView
             ref={(scrollView) => { _scrollView = scrollView; }}
           >
-            <ChatComponent qiscus={qiscus} updateLastHeight={(height) => {
-              this.setState({
-                lastComponentHeight: height,
-              });
-            }}
-            updateHeight={(height) => {this._measureChatContainer(height,'scrollView');this.setState({containerHeight: height});}} />
+            <ChatComponent
+              qiscus={qiscus}
+              isSending={isSending}
+              updateHeight={(height) => {this._measureChatContainer(height,'scrollView');this.setState({containerHeight: height});}}
+            />
             <View style={[styles.breaker]} />
           </ScrollView>
         </View>
         <View style={this.state.formStyle}>
-          <TextInput style={styles.textInput} underlineColorAndroid='transparent'
-            value={newMessage} placeholder="Say something" multiline={true}
-            onChangeText={(text) => this._setNewMessage(text)}
-          />
-          <FilePicker sendMessage={this._sendMessage} />
-          <TouchableOpacity style={{padding: 2}} onPress={() => this._sendMessage(newMessage)}>
-            <Icon name="send" size={30} color="#444" style={{marginRight: 5}}/>
-          </TouchableOpacity>
+          {isSending ? <View style={{width: 0.80 * width, justifyContent: 'center', flexDirection: 'row'}}><ActivityIndicator style={[{alignItems: 'center', justifyContent: 'center'}]} size="large" color="#6fbf15" /></View> :
+              <TextInput style={styles.textInput} underlineColorAndroid='transparent'
+                value={newMessage} placeholder="Say something" multiline={true}
+                onChangeText={(text) => this._setNewMessage(text)}
+              />
+          }
+          <FilePicker sendMessage={this._sendMessage} isSending={() => this.setState({isSending: true})} />
+          {isSending ? null :<TouchableOpacity style={{padding: 2}} onPress={() => this._sendMessage(newMessage)}>
+              <Icon name="send" size={30} color="#444" style={{marginRight: 5}}/>
+            </TouchableOpacity>
+          }
         </View>
       </View>
     );

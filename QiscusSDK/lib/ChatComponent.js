@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {View, Image, Text} from 'react-native';
+import {View, Image, Text, ActivityIndicator} from 'react-native';
 import autobind from 'class-autobind';
 import styles from "./styles";
 
@@ -22,19 +22,20 @@ function renderMessage(isFile: boolean, message: string) {
 }
 
 export function ChatComponent(props: Object) {
-  const {qiscus, updateHeight, updateLastHeight} = props;
+  const {qiscus, updateHeight, isSending} = props;
   const comments = qiscus.selected.comments;
   const user = qiscus.userData;
   let currentUserName = '';
   let isSamePerson = true;
   let marginChat = 10;
   let marginMessage = 0;
+  let heighChat = 0;
   return (
     <View onLayout={(event) => {
       updateHeight(event.nativeEvent.layout.height);
     }}
     >
-      {comments.map((data) => {
+      {comments.map((data, index) => {
         let isFile = data.message.substring(0, 6) === '[file]' ? true : false;
         if (currentUserName !== data.username_as) {
           currentUserName = data.username_as;
@@ -46,14 +47,13 @@ export function ChatComponent(props: Object) {
           marginMessage = 6;
           isSamePerson = true;
         }
+        heighChat = comments.length - 1 == index ? 35 : 0;
         if (user.username === data.username_as) {
           if (data.username_real) {
             return (
               <View
-                onLayout={(event) => {
-                  updateLastHeight(event.nativeEvent.layout.height);
-                }}
-                style={[styles.messageContainerRight, {paddingTop: marginChat}]} key={data.id}>
+                key={data.id}
+                style={[styles.messageContainerRight, {paddingTop: marginChat, marginBottom: heighChat}]}>
               <View style={styles.cardContainerRight}>
                 <View style={[styles.cardRightContent, {marginRight: marginMessage}]}>
                   {isSamePerson ? null : <View style={{paddingBottom: 5, borderBottomColor: '#b3bab5', borderBottomWidth: 1, marginBottom: 5}}><Text style={{fontWeight: 'bold'}}>{data.username_as}</Text></View>}
@@ -74,16 +74,12 @@ export function ChatComponent(props: Object) {
               </View>
             );
           } else {
-            return;
+            return <ActivityIndicator key={data.id} style={[{marginBottom: heighChat, alignItems: 'center', justifyContent: 'center'}]} size="large" color="#6fbf15" />;
           }
-
         } else {
           return (
             <View
-              onLayout={(event) => {
-                updateLastHeight(event.nativeEvent.layout.height);
-              }}
-              style={[styles.messageContainerLeft, {paddingTop: marginChat}]} key={data.id}>
+              style={[styles.messageContainerLeft, {paddingTop: marginChat, marginBottom: heighChat}]} key={data.id}>
               {!isSamePerson ?
                 <Image
                   style={{height: 40, width: 40, borderRadius: 20, marginLeft: 5}}
