@@ -9,10 +9,14 @@
 	"dependencies": {
 		"react": "16.0.0-alpha.12",
 		"react-native": "0.45.1",
-		"react-native-qiscus-sdk": "0.0.18"
+		"react-native-actionsheet": "^2.3.0",
+		"react-native-lightbox": "^0.7.0",
+		"react-native-qiscus-sdk": "0.1.1"
 	},
 	"devDependencies": {
 		"babel-jest": "21.2.0",
+		"babel-cli": "^6.18.0",
+		"babel-eslint": "^6.1.2",
 		"babel-preset-react-native": "4.0.0",
 		"jest": "21.2.1",
 		"react-test-renderer": "16.0.0-alpha.12"

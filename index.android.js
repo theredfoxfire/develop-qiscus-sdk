@@ -14,7 +14,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import {InitApp, ChatRenderer} from 'react-native-qiscus-sdk';
+import {InitApp, ChatRenderer} from './QiscusSDK/lib';
 
 type Room = {
   name: string,
@@ -40,9 +40,9 @@ export default class AppSDK extends Component {
   }
   componentWillMount() {
     const userAuth = {
-      email: 'fikri@qiscus.com',
+      email: 'guest@qiscus.com',
       password: 'password',
-      displayName: 'fikri',
+      displayName: 'Guest Demo',
       avatar: null,
       appID: 'sdksample',
     }
@@ -109,9 +109,9 @@ export default class AppSDK extends Component {
     if (!selectedRoom) {
       return (
         <View style={styles.container}>
-          <TouchableOpacity style={styles.button} onPress={() => this._createNewGroup()}>
+          {/* <TouchableOpacity style={styles.button} onPress={() => this._createNewGroup()}>
             <Text>New Group Chat</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <ScrollView>
           {rooms.map((item, i) => {
               const name = item.room_name;
@@ -142,7 +142,23 @@ export default class AppSDK extends Component {
           <TouchableOpacity style={{marginLeft: 30, marginBottom: 10, marginTop: 0, justifyContent: 'center', alignItems: 'center', height: 40, width: 80, borderWidth: 1, borderColor: '#333131'}} onPress={() => this.setState({selectedRoom: null})}>
             <Text>Back</Text>
           </TouchableOpacity>
-          <ChatRenderer qiscus={qiscus} message={newMessage} room={selectedRoom} initApp={initApp} />
+          <ChatRenderer
+            qiscus={qiscus}
+            message={newMessage}
+            room={selectedRoom}
+            initApp={initApp}
+            // optional styling props
+            chatListStyle={{backgroundColor: 'transparent'}}
+            textInputStyle={{borderRadius: 5, borderColor: '#68a7f0', borderWidth: 2}}
+            sendIconStyle={{color: '#c1de13'}}
+            attachIconStyle={{color: '#c1de13'}}
+            messageItemRightStyle={{backgroundColor: '#afa73e'}}
+            messageItemLeftStyle={{backgroundColor: '#c93ea6'}}
+            senderTextStyle={{color: '#84c2d1'}}
+            messageTextStyle={{color: '#f4f4f4'}}
+            // for loadingIndicatorColor string only please
+            loadingIndicatorColor="#f439ec"
+          />
         </View>
       );
     }
